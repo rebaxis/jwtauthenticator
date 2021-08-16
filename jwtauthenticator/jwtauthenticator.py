@@ -26,7 +26,7 @@ class JSONWebTokenLoginHandler(BaseHandler):
         elif auth_header_content:
            if header_is_authorization:
               # we should not see "token" as first word in the AUTHORIZATION header, if we do it could mean someone coming in with a stale API token
-              if auth_header_content.split()[0] != "bearer":
+              if auth_header_content.split()[0] not in ['bearer', 'Bearer']:
                  raise web.HTTPError(403)
               token = auth_header_content.split()[1]
            else:
@@ -44,7 +44,7 @@ class JSONWebTokenLoginHandler(BaseHandler):
         elif signing_certificate:
             claims = self.verify_jwt_with_claims(token, signing_certificate, audience)
         else:
-           raise web.HTTPError(401)
+           claims = self.get_unverified_claims(token)
 
         username = self.retrieve_username(claims, username_claim_field)
         user = self.user_from_username(username)
@@ -100,6 +100,8 @@ class JSONWebTokenAuthenticator(Authenticator):
         The public certificate of the private key used to sign the incoming JSON Web Tokens.
 
         Should be a path to an X509 PEM format certificate filesystem.
+        
+        If this and secret are not specified then JWT token will not be checked.
         """
     )
 
@@ -135,7 +137,8 @@ class JSONWebTokenAuthenticator(Authenticator):
 
     secret = Unicode(
         config=True,
-        help="""Shared secret key for siging JWT token.  If defined, it overrides any setting for signing_certificate""")
+        help="""Shared secret key for siging JWT token.  If defined, it overrides any setting for signing_certificate. If this and signing_certificate 
+        are not specified then JWT token will not be checked.""")
 
     def get_handlers(self, app):
         return [
