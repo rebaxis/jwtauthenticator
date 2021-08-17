@@ -1,12 +1,12 @@
 from setuptools import setup
 
 setup(
-    name='jupyterhub-jwtauthenticator',
-    version='0.2-dev',
+    name='jupyterhub-jwtauthenticator-rebaxis',
+    version='0.1',
     description='JSONWebToken Authenticator for JupyterHub',
-    url='https://github.com/mogthesprog/jwtauthenticator',
-    author='mogthesprog',
-    author_email='mevanj89@gmail.com',
+    url='https://github.com/rebaxis/jwtauthenticator',
+    author='mogthesprog, rebaxis',
+    author_email='mevanj89@gmail.com, rebaxis@gmail.com',
     license='Apache 2.0',
     tests_require = [
     'unittest2',
